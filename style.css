@@ -96,9 +96,17 @@ ul.tabcontainer .inactive
     text-align:         right;
 }
 
-#applyscenario 
-{
-    font-size:          1.6em;
+#scenarioname {
+    position:           absolute;
+    top:                30px;
+    left:               30px;
+    float:              left;
+    font-family:        'Philosopher';
+    font-size:          2em;
+    padding-left:       40px;
+    height:             2em;
+    line-height:        2em;
+    overflow:           hidden;
 }
 
 .panecontainer

@@ -87,6 +87,20 @@ ul.tabcontainer .inactive
     padding:            0;
 }
 
+.selectionlist input 
+{
+    margin:             5px;
+    width:              3em;
+    display:            block;
+    font-size:          1.6em;
+    text-align:         right;
+}
+
+#applyscenario 
+{
+    font-size:          1.6em;
+}
+
 .panecontainer
 {
     position:           fixed;

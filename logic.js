@@ -892,12 +892,19 @@ function add_modifier_deck(container, deck, preserve_discards) {
 function LevelSelector(text, inline) {
     var max_level = 7;
     var level = {};
-    level.html = inline ? document.createElement("span") : document.createElement("ul");
+    level.html = document.createElement("span");
     level.html.className = "selectionlist";
 
     var listitem = inline ? document.createElement("label") : document.createElement("li");
     listitem.innerText = text;
-    level.html.appendChild(listitem);
+    if (inline)
+    {
+        level.html.appendChild(listitem);
+    }
+    else 
+    {
+        level.html = listitem;
+    }
 
     var level_spinner = create_input("number", "scenario_number", "1", "");
     level_spinner.input.min = 0;
@@ -1013,7 +1020,7 @@ function ScenarioList(scenarios) {
     var scenario_spinner = create_input("number", "scenario_number", "1", "");
     scenario_spinner.input.min = 1;
     scenario_spinner.input.max = scenarios.length;
-    scenariolist.ul.appendChild(scenario_spinner.input);
+    listitem.appendChild(scenario_spinner.input);
     scenariolist.spinner = scenario_spinner.input;
 
     scenariolist.get_selection = function () {

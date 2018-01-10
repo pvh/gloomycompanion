@@ -12,7 +12,8 @@ var DECK_TYPES =
     };
 
 var EVENT_NAMES = {
-    MODIFIER_CARD_DRAWN: "modifierCardDrawn"
+    MODIFIER_CARD_DRAWN:            "modifierCardDrawn",
+    MODIFIER_DECK_SHUFFLE_REQUIRED: "modfierDeckShuffleRequired"
 };
 
 function UICard(front_element, back_element) {
@@ -461,6 +462,7 @@ function prevent_pull_animation(deck) {
 function reshuffle_modifier_deck(deck) {
     deck.clean_discard_pile();
     reshuffle(deck, true);
+    document.body.dispatchEvent(new CustomEvent(EVENT_NAMES.MODIFIER_DECK_SHUFFLE_REQUIRED, { detail: { shuffle: false } }));
 }
 
 function draw_modifier_card(deck) {
@@ -480,6 +482,11 @@ function draw_modifier_card(deck) {
                     count: deck.count(deck.discard[0].card_type)
                 }
             }));
+        
+        if (deck.shuffle_end_of_round())
+        {
+            document.body.dispatchEvent(new CustomEvent(EVENT_NAMES.MODIFIER_DECK_SHUFFLE_REQUIRED, { detail: { shuffle: true } }));
+        }
     }
     write_to_storage("modifier_deck", JSON.stringify(deck));
 }
@@ -617,8 +624,6 @@ function load_modifier_deck(number_bless, number_curses) {
             deck.draw_pile.push(card);
         }
     });
-
-
 
     return deck;
 }
@@ -782,6 +787,8 @@ function apply_deck_selection(decks, preserve_existing_deck_state)
                 modifier_deck.add_card("curse");
             }
             modifier_deck.draw_top_discard();
+
+            document.body.dispatchEvent(new CustomEvent(EVENT_NAMES.MODIFIER_DECK_SHUFFLE_REQUIRED, { detail: { shuffle: modifier_deck.shuffle_end_of_round() } }));
         }
     }
     else if (!preserve_existing_deck_state) {
@@ -901,6 +908,15 @@ function add_modifier_deck(container, deck, preserve_discards) {
         return widget_container;
     }
 
+    function indicate_shuffle_required(e){
+        if (e.detail.shuffle){
+            window.setTimeout(function() { end_round_div.className = "counter-icon shuffle"; }, 400);
+        }
+        else{
+            end_round_div.className = "counter-icon shuffle not-required";
+        }
+    }
+
     var modifier_container = document.createElement("div");
     modifier_container.className = "card-container";
     modifier_container.id = "modifier-container";
@@ -912,8 +928,10 @@ function add_modifier_deck(container, deck, preserve_discards) {
     button_div.appendChild(create_counter("curse", deck.add_card, deck.remove_card));
 
     var end_round_div = document.createElement("div");
-    end_round_div.className = "counter-icon shuffle";
+    end_round_div.className = "counter-icon shuffle not-required";
     end_round_div.onclick = end_round;
+
+    document.body.addEventListener(EVENT_NAMES.MODIFIER_DECK_SHUFFLE_REQUIRED, indicate_shuffle_required);
 
     button_div.appendChild(end_round_div);
 

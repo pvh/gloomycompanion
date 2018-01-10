@@ -168,7 +168,8 @@ function load_ability_deck(deck_class, deck_name, level) {
         move: [0, 0],
         attack: [0, 0],
         range: [0, 0],
-        level: deck_definition.level
+        level: deck_definition.level,
+        drawn_current_round: false
     }
 
     for (var i = 0; i < deck_definition.cards.length; i++) {
@@ -420,13 +421,23 @@ function send_to_discard(card, pull_animation) {
     card.ui.addClass("discard");
 }
 
-function draw_ability_card(deck) {
+var sort_timer;
 
+function draw_ability_card(deck)
+{
     if (deck.must_reshuffle()) {
         reshuffle(deck, true);
     }
-    else {
-        visible_ability_decks.forEach(function (visible_deck) {
+    else {        
+        deck.drawn_current_round = true;
+        
+        if (deck.deck_space.className.indexOf('unused') < 0) {
+            window.clearTimeout(sort_timer);
+            sort_timer = window.setTimeout(sort_visible_decks, 3000);
+        }
+        deck.deck_space.className = deck.deck_space.className.replace(/ unused/, '');
+
+        visible_ability_decks.forEach(function(visible_deck) {
             if (visible_deck.class == deck.class) {
                 visible_deck.draw_top_card();
                 flip_up_top_card(visible_deck);
@@ -709,7 +720,40 @@ function get_boss_stats(name, level) {
     }
 }
 
-function apply_deck_selection(decks, preserve_existing_deck_state) {
+function sort_visible_decks(){
+    var identifiers = visible_ability_decks.map(function(elem) {
+        return elem.identifier;
+    });
+
+    visible_ability_decks.sort(function(a,b) {
+        if (a.drawn_current_round === b.drawn_current_round) return 0;
+        if (a.drawn_current_round & !b.drawn_current_round & true) return -1;
+        return 1
+    });
+
+    var tableau = document.getElementById("tableau");
+    var sort_needed = false;
+
+    visible_ability_decks.forEach(function(deck, index) {
+        sort_needed = sort_needed || (identifiers[index] !== deck.identifier);
+    });
+
+    visible_ability_decks.forEach(function(deck) {
+        if (sort_needed) {
+            tableau.removeChild(deck.deck_space);
+            tableau.appendChild(deck.deck_space);
+        }
+        deck.deck_space.className = deck.deck_space.className.replace(/ unused/, '');
+
+        if (!deck.drawn_current_round) {
+            deck.deck_space.className += " unused";
+        }
+        deck.drawn_current_round = false; 
+    });
+}
+
+function apply_deck_selection(decks, preserve_existing_deck_state)
+{
     var container = document.getElementById("tableau");
 
     var decks_to_remove = visible_ability_decks.filter(function (visible_deck) {
@@ -751,9 +795,16 @@ function apply_deck_selection(decks, preserve_existing_deck_state) {
         deck.discard_deck();
     });
 
-    decks_to_add.forEach(function (deck) {
+    decks_to_add.forEach(function(deck, index) {
+
         var deck_space = document.createElement("div");
         deck_space.className = "card-container";
+        deck.deck_space = deck_space;
+        deck.identifier = "deck_" + (index+1);
+
+        visible_ability_decks.forEach(function(deck) {
+            deck.drawn_current_round = false;
+        });
 
         container.appendChild(deck_space);
 

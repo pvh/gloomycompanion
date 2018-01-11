@@ -5,6 +5,8 @@ body
     overflow-x:         hidden;
 
     margin-top:         30px;
+
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .nobr
@@ -94,6 +96,22 @@ ul.tabcontainer .inactive
     display:            block;
     font-size:          1.6em;
     text-align:         right;
+}
+
+#deckspage input{
+    display:            inline;
+    width:              2em;
+    font-size:          1.2em;
+}
+
+#deckspage input[type=checkbox]{
+    width:              1em;
+}
+
+#scenariospage input[type=button], #deckspage input[type=button]{
+    text-align:         center;
+    width:              auto;
+    font-size:          1.2em;
 }
 
 #scenarioname {

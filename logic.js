@@ -435,7 +435,7 @@ function draw_ability_card(deck)
             window.clearTimeout(sort_timer);
             sort_timer = window.setTimeout(sort_visible_decks, 3000);
         }
-        deck.deck_space.className = deck.deck_space.className.replace(/ unused/, '');
+        deck.deck_space.classList.remove("unused");
 
         visible_ability_decks.forEach(function(visible_deck) {
             if (visible_deck.class == deck.class) {
@@ -722,7 +722,7 @@ function get_boss_stats(name, level) {
 
 function scroll_to_top() {
     var scrollBarPosition = window.pageYOffset | document.body.scrollTop
-    if (scrollBarPosition < 10)
+    if (scrollBarPosition < 50)
         return true;
 
     window.scrollBy(0,-18);
@@ -749,13 +749,14 @@ function sort_visible_decks(){
 
     visible_ability_decks.forEach(function(deck) {
         if (sort_needed) {
+            prevent_pull_animation(deck);
             tableau.removeChild(deck.deck_space);
             tableau.appendChild(deck.deck_space);
         }
-        deck.deck_space.className = deck.deck_space.className.replace(/ unused/, '');
+        deck.deck_space.classList.remove("unused");
 
         if (!deck.drawn_current_round) {
-            deck.deck_space.className += " unused";
+            deck.deck_space.classList.add("unused");
             new_unused = true;
         }
 

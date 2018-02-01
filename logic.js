@@ -720,6 +720,15 @@ function get_boss_stats(name, level) {
     }
 }
 
+function scroll_to_top() {
+    var scrollBarPosition = window.pageYOffset | document.body.scrollTop
+    if (scrollBarPosition < 10)
+        return true;
+
+    window.scrollBy(0,-18);
+    window.setTimeout(scroll_to_top, 1000/60);
+}
+
 function sort_visible_decks(){
     var identifiers = visible_ability_decks.map(function(elem) {
         return elem.identifier;
@@ -747,9 +756,14 @@ function sort_visible_decks(){
 
         if (!deck.drawn_current_round) {
             deck.deck_space.className += " unused";
+            new_unused = true;
         }
+
         deck.drawn_current_round = false; 
     });
+
+    if (sort_needed)
+        scroll_to_top();
 }
 
 function apply_deck_selection(decks, preserve_existing_deck_state)

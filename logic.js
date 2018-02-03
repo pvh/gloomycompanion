@@ -4,6 +4,7 @@ var visible_ability_decks = [];
 var modifier_deck = null;
 var deck_definitions = load_definition(DECK_DEFINITONS);
 var progress = null;
+var round_number = 0;
 
 var DECK_TYPES =
     {
@@ -460,8 +461,6 @@ function send_to_discard(card, pull_animation) {
     card.ui.addClass("discard");
 }
 
-var sort_timer;
-
 function draw_ability_card(deck)
 {
     if (deck.must_reshuffle()) {
@@ -804,6 +803,15 @@ function sort_visible_decks(){
 
     if (sort_needed)
         scroll_to_top();
+
+    document.body.dispatchEvent(new CustomEvent(
+        EVENT_NAMES.MODIFIER_CARD_DRAWN,
+        {
+            detail: {
+                card_type: "round",
+                count: ++round_number
+            }
+        }));
 }
 
 function apply_deck_selection(decks, preserve_existing_deck_state)
@@ -942,9 +950,11 @@ function add_modifier_deck(container, deck, preserve_discards) {
         text_element.className = "icon-text";
         text_element.innerText = "0";
 
-        widget_container.appendChild(create_button("decrement", "-", decrement_func, text_element));
+        if (decrement_func)
+            widget_container.appendChild(create_button("decrement", "-", decrement_func, text_element));
         widget_container.appendChild(text_element);
-        widget_container.appendChild(create_button("increment", "+", increment_func, text_element));
+        if (increment_func)
+            widget_container.appendChild(create_button("increment", "+", increment_func, text_element));
 
         document.body.addEventListener(EVENT_NAMES.MODIFIER_CARD_DRAWN, function (e) {
             if (e.detail.card_type === card_type) {
@@ -964,6 +974,7 @@ function add_modifier_deck(container, deck, preserve_discards) {
 
     button_div.appendChild(create_counter("bless", deck.add_card, deck.remove_card));
     button_div.appendChild(create_counter("curse", deck.add_card, deck.remove_card));
+    button_div.appendChild(create_counter("round"));
 
     var end_round_div = document.createElement("div");
     end_round_div.className = "counter-icon shuffle";

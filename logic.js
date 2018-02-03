@@ -3,6 +3,7 @@ var do_shuffles = true;
 var visible_ability_decks = [];
 var modifier_deck = null;
 var deck_definitions = load_definition(DECK_DEFINITONS);
+var progress = null;
 
 var DECK_TYPES =
     {
@@ -58,6 +59,44 @@ function UICard(front_element, back_element) {
 
     return card;
 }
+
+function TurnProgress(timeout, fps){
+    var _timer;
+    var element = document.getElementById('progress');
+    timeout = timeout || 3500;
+    fps = fps || 60;
+
+    var progress = {
+        percent: 0,
+        round_length: timeout,
+        tick_speed: Math.ceil(1000 / fps),
+        width_per_tick: 100/(timeout/(1000/fps)),
+        callback: function() {},
+        start: function(cb) {
+            progress.callback = cb;
+            progress.percent = 0;
+            progress.cnt 
+            window.clearInterval(_timer);
+            _timer = window.setInterval(tick, progress.tick_speed, progress);
+        },
+        restart: function() {
+            progress.percent = 0;
+        }
+    };
+    var set_progress = function(percent) {element.style.width = (Math.floor(percent * 1000) / 1000) + "%";}
+    var tick = function(a){
+        a.percent += a.width_per_tick;
+
+        if (a.percent >= 100){
+            window.clearInterval(_timer);
+            progress.callback();
+            set_progress(0);
+            return;
+        }
+        set_progress(a.percent);
+    }
+    return progress;
+};
 
 function create_ability_card_back(name, level) {
     var card = document.createElement("div");
@@ -427,13 +466,13 @@ function draw_ability_card(deck)
 {
     if (deck.must_reshuffle()) {
         reshuffle(deck, true);
+        progress.restart();
     }
     else {        
         deck.drawn_current_round = true;
         
         if (deck.deck_space.className.indexOf('unused') < 0) {
-            window.clearTimeout(sort_timer);
-            sort_timer = window.setTimeout(sort_visible_decks, 3000);
+            progress.start(sort_visible_decks);
         }
         deck.deck_space.classList.remove("unused");
 
@@ -1163,4 +1202,5 @@ function init() {
     }
 
     window.onresize = refresh_ui.bind(null, visible_ability_decks);
+    progress = new TurnProgress();
 }

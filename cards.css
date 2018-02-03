@@ -537,3 +537,12 @@ img[src="images/shuffle.svg"]
     -webkit-transform:          rotateY(180deg);
     transform:                  rotateY(180deg);
 }
+
+#progress
+{
+    position: fixed;
+    top: 0px;
+    width: 0%;
+    background-color: red;
+    height: 4px;
+}

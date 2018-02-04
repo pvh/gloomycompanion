@@ -65,7 +65,7 @@ function UICard(front_element, back_element) {
 function TurnProgress(timeout, fps){
     var _timer;
     var element = document.getElementById('progress');
-    timeout = timeout || 3500;
+    timeout = timeout || 2500;
     fps = fps || 60;
 
     var progress = {

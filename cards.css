@@ -53,7 +53,7 @@
 {
     position:                   relative;
     height:                     22%;
-    margin:                     30% 0;
+    margin:                     35% 0%;
 
     list-style:                 none;
 
@@ -113,6 +113,14 @@
     background-image:           url(images/bless.svg);
 }
 
+.background.round
+{
+    background-image:           url(images/round-black.svg);
+    opacity:                    0.75;
+    width:                      90%;
+    height:                     90%;
+}
+
 .counter-icon.shuffle
 {
     background-repeat:          no-repeat;
@@ -122,8 +130,8 @@
     cursor:                     pointer;
 
     position:                   absolute;
-    left:                       0;
-    bottom:                     -40%;
+    left:                       25%;
+    bottom:                     -45%;
     width:                      20%;
     height:                     20%;
 }
@@ -177,7 +185,7 @@
 {
     position:                   absolute;
     right:                      33%;
-    bottom:                     0;
+    bottom:                     5%;
     width:                      20%;
     height:                     20%;
     background-repeat:          no-repeat;
@@ -544,4 +552,13 @@ img[src="images/shuffle.svg"]
 {
     -webkit-transform:          rotateY(180deg);
     transform:                  rotateY(180deg);
+}
+
+#progress
+{
+    position: fixed;
+    top: 0px;
+    width: 0%;
+    background-color: red;
+    height: 4px;
 }

@@ -3,6 +3,8 @@ var do_shuffles = true;
 var visible_ability_decks = [];
 var modifier_deck = null;
 var deck_definitions = load_definition(DECK_DEFINITONS);
+var progress = null;
+var round_number = 0;
 
 var DECK_TYPES =
     {
@@ -59,6 +61,44 @@ function UICard(front_element, back_element) {
 
     return card;
 }
+
+function TurnProgress(timeout, fps){
+    var _timer;
+    var element = document.getElementById('progress');
+    timeout = timeout || 3500;
+    fps = fps || 60;
+
+    var progress = {
+        percent: 0,
+        round_length: timeout,
+        tick_speed: Math.ceil(1000 / fps),
+        width_per_tick: 100/(timeout/(1000/fps)),
+        callback: function() {},
+        start: function(cb) {
+            progress.callback = cb;
+            progress.percent = 0;
+            progress.cnt 
+            window.clearInterval(_timer);
+            _timer = window.setInterval(tick, progress.tick_speed, progress);
+        },
+        restart: function() {
+            progress.percent = 0;
+        }
+    };
+    var set_progress = function(percent) {element.style.width = (Math.floor(percent * 1000) / 1000) + "%";}
+    var tick = function(a){
+        a.percent += a.width_per_tick;
+
+        if (a.percent >= 100){
+            window.clearInterval(_timer);
+            progress.callback();
+            set_progress(0);
+            return;
+        }
+        set_progress(a.percent);
+    }
+    return progress;
+};
 
 function create_ability_card_back(name, level) {
     var card = document.createElement("div");
@@ -422,21 +462,19 @@ function send_to_discard(card, pull_animation) {
     card.ui.addClass("discard");
 }
 
-var sort_timer;
-
 function draw_ability_card(deck)
 {
     if (deck.must_reshuffle()) {
         reshuffle(deck, true);
+        progress.restart();
     }
     else {        
         deck.drawn_current_round = true;
         
         if (deck.deck_space.className.indexOf('unused') < 0) {
-            window.clearTimeout(sort_timer);
-            sort_timer = window.setTimeout(sort_visible_decks, 3000);
+            progress.start(sort_visible_decks);
         }
-        deck.deck_space.className = deck.deck_space.className.replace(/ unused/, '');
+        deck.deck_space.classList.remove("unused");
 
         visible_ability_decks.forEach(function(visible_deck) {
             if (visible_deck.class == deck.class) {
@@ -728,6 +766,15 @@ function get_boss_stats(name, level) {
     }
 }
 
+function scroll_to_top() {
+    var scrollBarPosition = window.pageYOffset | document.body.scrollTop
+    if (scrollBarPosition < 50)
+        return true;
+
+    window.scrollBy(0,-18);
+    window.setTimeout(scroll_to_top, 1000/60);
+}
+
 function sort_visible_decks(){
     var identifiers = visible_ability_decks.map(function(elem) {
         return elem.identifier;
@@ -748,16 +795,31 @@ function sort_visible_decks(){
 
     visible_ability_decks.forEach(function(deck) {
         if (sort_needed) {
+            prevent_pull_animation(deck);
             tableau.removeChild(deck.deck_space);
             tableau.appendChild(deck.deck_space);
         }
-        deck.deck_space.className = deck.deck_space.className.replace(/ unused/, '');
+        deck.deck_space.classList.remove("unused");
 
         if (!deck.drawn_current_round) {
-            deck.deck_space.className += " unused";
+            deck.deck_space.classList.add("unused");
+            new_unused = true;
         }
+
         deck.drawn_current_round = false; 
     });
+
+    if (sort_needed)
+        scroll_to_top();
+
+    document.body.dispatchEvent(new CustomEvent(
+        EVENT_NAMES.MODIFIER_CARD_DRAWN,
+        {
+            detail: {
+                card_type: "round",
+                count: ++round_number
+            }
+        }));
 }
 function apply_scenario_name(name)
 {
@@ -902,9 +964,11 @@ function add_modifier_deck(container, deck, preserve_discards) {
         text_element.className = "icon-text";
         text_element.innerText = "0";
 
-        widget_container.appendChild(create_button("decrement", "-", decrement_func, text_element));
+        if (decrement_func)
+            widget_container.appendChild(create_button("decrement", "-", decrement_func, text_element));
         widget_container.appendChild(text_element);
-        widget_container.appendChild(create_button("increment", "+", increment_func, text_element));
+        if (increment_func)
+            widget_container.appendChild(create_button("increment", "+", increment_func, text_element));
 
         document.body.addEventListener(EVENT_NAMES.MODIFIER_CARD_DRAWN, function (e) {
             if (e.detail.card_type === card_type) {
@@ -933,6 +997,7 @@ function add_modifier_deck(container, deck, preserve_discards) {
 
     button_div.appendChild(create_counter("bless", deck.add_card, deck.remove_card));
     button_div.appendChild(create_counter("curse", deck.add_card, deck.remove_card));
+    button_div.appendChild(create_counter("round"));
 
     var end_round_div = document.createElement("div");
     end_round_div.className = "counter-icon shuffle not-required";
@@ -1190,4 +1255,5 @@ function init() {
     }
 
     window.onresize = refresh_ui.bind(null, visible_ability_decks);
+    progress = new TurnProgress();
 }

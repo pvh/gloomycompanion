@@ -1,26 +1,29 @@
 CACHE MANIFEST
 #
-# Version Mon Apr 24 14:04:54 UTC 2017
+# Version Mi 10 Jan 2018 22:51:34 UTC
 #
 
+Philosopher-Bold.ttf
+PirataOne-Gloomhaven.ttf
+_config.yml
 app.webmanifest
 cards.css
 cards.js
 images/add_target.svg
 images/air.svg
 images/any_element.svg
-images/aoe1.svg
-images/aoe2.svg
 images/aoe-4-with-black.svg
-images/aoe-circle.svg
 images/aoe-circle-with-middle-black.svg
 images/aoe-circle-with-side-black.svg
+images/aoe-circle.svg
 images/aoe-line-3-with-black.svg
 images/aoe-line-4-with-black.svg
 images/aoe-line-6-with-black.svg
-images/aoe-triangle-2-side.svg
 images/aoe-triangle-2-side-with-black.svg
+images/aoe-triangle-2-side.svg
 images/aoe-triangle-3-side-with-corner-black.svg
+images/aoe1.svg
+images/aoe2.svg
 images/attack.svg
 images/attack_mod_+0.jpg
 images/attack_mod_+1.jpg
@@ -62,8 +65,8 @@ images/range.svg
 images/retaliate.svg
 images/settings.svg
 images/shield.svg
-images/shuffle.svg
 images/shuffle-black.svg
+images/shuffle.svg
 images/sightlessEye.special1Area.svg
 images/sightlessEye.special2Area.svg
 images/strengthen.svg
@@ -76,8 +79,6 @@ logic.js
 macros.js
 modifiers.js
 monster_stats.js
-Philosopher-Bold.ttf
-PirataOne-Gloomhaven.ttf
 scenarios.js
 style.css
 ui.js

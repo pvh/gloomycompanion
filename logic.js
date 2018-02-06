@@ -714,6 +714,12 @@ function get_boss_stats(name, level) {
     }
 }
 
+function apply_scenario_name(name)
+{
+    var container = document.getElementById("scenarioname");
+    container.innerText = name;
+}
+
 function apply_deck_selection(decks, preserve_existing_deck_state) {
     var container = document.getElementById("tableau");
 
@@ -910,12 +916,19 @@ function add_modifier_deck(container, deck, preserve_discards) {
 function LevelSelector(text, inline) {
     var max_level = 7;
     var level = {};
-    level.html = inline ? document.createElement("span") : document.createElement("ul");
+    level.html = document.createElement("span");
     level.html.className = "selectionlist";
 
     var listitem = inline ? document.createElement("label") : document.createElement("li");
     listitem.innerText = text;
-    level.html.appendChild(listitem);
+    if (inline)
+    {
+        level.html.appendChild(listitem);
+    }
+    else 
+    {
+        level.html = listitem;
+    }
 
     var level_spinner = create_input("number", "scenario_number", "1", "");
     level_spinner.input.min = 0;
@@ -1031,7 +1044,7 @@ function ScenarioList(scenarios) {
     var scenario_spinner = create_input("number", "scenario_number", "1", "");
     scenario_spinner.input.min = 1;
     scenario_spinner.input.max = scenarios.length;
-    scenariolist.ul.appendChild(scenario_spinner.input);
+    listitem.appendChild(scenario_spinner.input);
     scenariolist.spinner = scenario_spinner.input;
 
     scenariolist.get_selection = function () {
@@ -1063,6 +1076,11 @@ function ScenarioList(scenarios) {
         }));
     }
 
+    scenariolist.get_scenario_name = function()
+    {
+        return scenarios[this.get_selection()].name;
+    }
+
     scenariolist.get_special_rules = function () {
         return this.special_rules[this.get_selection()];
     }
@@ -1091,17 +1109,21 @@ function init() {
             return load_ability_deck(deck_names.class, deck_names.name, deck_names.level);
         });
         apply_deck_selection(selected_decks, true);
+        apply_scenario_name(null);
+        write_to_storage("scenario_name", null);
     };
 
     applyscenariobtn.onclick = function () {
         localStorage.clear();
         var selected_deck_names = scenariolist.get_scenario_decks();
         write_to_storage("selected_deck_names", JSON.stringify(selected_deck_names));
+        write_to_storage("scenario_name", scenariolist.get_scenario_name());
         decklist.set_selection(selected_deck_names);
         var selected_decks = selected_deck_names.map(function (deck_names) {
             return load_ability_deck(deck_names.class, deck_names.name, deck_names.level);
         });
         apply_deck_selection(selected_decks, false);
+        apply_scenario_name(scenariolist.get_scenario_name());
     };
 
     applyloadbtn.onclick = function () {
@@ -1111,6 +1133,7 @@ function init() {
             return load_ability_deck(deck_names.class, deck_names.name, deck_names.level);
         });
         apply_deck_selection(selected_decks, true);
+        apply_scenario_name(get_from_storage("scenario_name"));
 
     }
 

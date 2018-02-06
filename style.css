@@ -5,6 +5,8 @@ body
     overflow-x:         hidden;
 
     margin-top:         30px;
+
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .nobr
@@ -85,6 +87,44 @@ ul.tabcontainer .inactive
 {
     list-style:         none;
     padding:            0;
+}
+
+.selectionlist input 
+{
+    margin:             5px;
+    width:              3em;
+    display:            block;
+    font-size:          1.6em;
+    text-align:         right;
+}
+
+#deckspage input{
+    display:            inline;
+    width:              2em;
+    font-size:          1.2em;
+}
+
+#deckspage input[type=checkbox]{
+    width:              1em;
+}
+
+#scenariospage input[type=button], #deckspage input[type=button]{
+    text-align:         center;
+    width:              auto;
+    font-size:          1.2em;
+}
+
+#scenarioname {
+    position:           absolute;
+    top:                30px;
+    left:               30px;
+    float:              left;
+    font-family:        'Philosopher';
+    font-size:          2em;
+    padding-left:       40px;
+    height:             2em;
+    line-height:        2em;
+    overflow:           hidden;
 }
 
 .panecontainer

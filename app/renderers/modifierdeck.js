@@ -1,0 +1,90 @@
+'use strict';
+
+import { UICard } from '/app/renderers/uicard.js';
+
+export class ModifierDeckRenderer{
+	constructor(deck, container){
+		this.deck = deck;
+		this.container = container;
+	}
+	render(){
+	    let button_div = document.createElement("div");
+	    button_div.className = "modifier-deck-column-1";
+
+	    button_div.appendChild(this.create_counter_widget("bless", (a) => this.deck.add(a), (a) => this.deck.remove(a)));
+	    button_div.appendChild(this.create_counter_widget("curse", (a) => this.deck.add(a), (a) => this.deck.remove(a)));
+	    button_div.appendChild(this.create_counter_widget("round"));
+
+	    let end_round_div = document.createElement("div");
+	    end_round_div.className = "counter-icon shuffle not-required";
+	    //end_round_div.onclick = end_round;
+
+	    button_div.appendChild(end_round_div);
+
+	    let deck_column = document.createElement("div");
+	    deck_column.className = "modifier-deck-column-2";
+
+	    let deck_space = document.createElement("div");
+	    deck_space.className = "card-container modifier";
+	    deck_space.id = "boom";
+
+	    let draw_two_button = document.createElement("div");
+	    draw_two_button.className = "button draw-two";
+//	    draw_two_button.onclick = double_draw.bind(null, modifier_deck);
+
+	    deck_column.appendChild(deck_space);
+	    deck_column.appendChild(draw_two_button);
+
+	    this.container.appendChild(deck_column);
+	    this.container.appendChild(button_div);
+
+	    let uiCards = this.deck.cards.map((c) => new UICard(c));
+	    let container = document.getElementById("boom");
+
+	    uiCards.forEach((c) => {
+	    	c.attach(container);
+	    });
+
+
+
+
+
+
+	}
+	create_counter_widget(card_type, increment_func, decrement_func) {
+
+        let widget_container = document.createElement("div");
+        widget_container.className = "counter-icon";
+
+        let background = document.createElement("div");
+        background.className = "background " + card_type;
+        widget_container.appendChild(background);
+
+        let text_element = document.createElement("div");
+        text_element.className = "icon-text";
+        text_element.innerText = "0";
+
+        if (decrement_func)
+            widget_container.appendChild(this.create_button(card_type, "decrement", "-", decrement_func, text_element));
+        
+        widget_container.appendChild(text_element);
+        
+        if (increment_func)
+            widget_container.appendChild(this.create_button(card_type, "increment", "+", increment_func, text_element));
+
+        return widget_container;
+    }
+    create_button(card_type, class_name, text, func, text_element) {
+        var button = document.createElement("div");
+        button.className = class_name + " button";
+        button.innerText = text;
+
+        button.addEventListener("click", () => {
+        	text_element.innerText = func(card_type);
+        });
+
+        return button;
+    }
+}
+
+export default ModifierDeckRenderer; 

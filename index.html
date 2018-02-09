@@ -13,35 +13,74 @@
         <meta name="apple-mobile-web-app-title" content="Gloomy Companion" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <script type="module" src="app/data/scenarios.js"></script>
+
+        <script type="module" src="app/constants.js"></script>
+        <script type="module" src="app/turndetect.js"></script>
+        <script type="module" src="app/uicard.js"></script>
+        <script type="module" src="app/utils.js"></script>
+        
+        
+        <script type="module" src="app/decks/deck.js"></script>
+        <script type="module" src="app/decks/modifierdeck.js"></script>
+
+        <script type="module" src="app/menu/scenarios.js"></script>
+
+        <script type="module" src="app/menu.js"></script>
+        <script type="module" src="app/tableau.js"></script>
+
+
         <script type="text/javascript" src="util.js"></script>
         <script type="text/javascript" src="cards.js"></script>
         <script type="text/javascript" src="scenarios.js"></script>
         <script type="text/javascript" src="macros.js"></script>
         <script type="text/javascript" src="modifiers.js"></script>
         <script type="text/javascript" src="monster_stats.js"></script>
-        <script type="text/javascript" src="logic.js"></script>
-        <script type="text/javascript" src="ui.js"></script>
+        <script type="module" src="logic.js"></script>
+        <!-- <script type="text/javascript" src="ui.js"></script> -->
     </head>
-    <body onload="init(); init_ui();">
+    <body>
         <div id="progress"></div>
+
         <div class="panecontainer">
+
             <div id="settingspane" class="pane expanded">
                 <ul class="tabcontainer">
-                    <li id="scenariotab">Scenario</li>
-                    <li id="deckstab">Decks</li>
+                    <li id="scenariotab" class="">Scenario</li>
+                    <li id="deckstab" class="inactive">Decks</li>
                 </ul>
                 <div id="scenariospage" class="tabbody">
-                    <input id="applyscenario" type="button" value="Apply" />
-                    <br>
-                    <input id="applyload" type="button" value="Load Previous Scenario" />
+                    <ul class="selectionlist">
+                        <li>
+                            Select level
+                            <input type="number" id="scenario_level" min="0" max="7" value="1">
+                        </li>
+                        <li>
+                            Select scenario number
+                            <input type="number" id="scenario_number" min="1" max="1" value="1">
+                            <span id="scenario_name"></span>
+                        </li>
+                    </ul>
+                    <input id="applyscenario" type="button" value="Start scenario">
                 </div>
-                <div id="deckspage" class="tabbody">
-                    <input id="applydecks" type="button" value="Apply" />
+                <div id="deckspage" class="inactive tabbody">
+                    <ul class="selectionlist">
+                        <li>
+                            <span class="selectionlist">
+                                <label>Select global level </label>
+                                <input type="number" name="scenario_number" min="0" max="7">
+                            </span>
+                            <label>
+                                <input type="button" name="applylevel" value="Apply All"></label></li><li><label><input type="checkbox" name="deck" value="Ancient Artillery">Ancient Artillery</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Bandit Archer">Bandit Archer</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Bandit Guard">Bandit Guard</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Black Imp">Black Imp</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Boss">Boss</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Cave Bear">Cave Bear</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="City Archer">City Archer</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="City Guard">City Guard</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Cultist">Cultist</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Deep Terror">Deep Terror</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Earth Demon">Earth Demon</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Flame Demon">Flame Demon</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Forest Imp">Forest Imp</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Frost Demon">Frost Demon</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Giant Viper">Giant Viper</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Harrower Infester">Harrower Infester</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Hound">Hound</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Inox Archer">Inox Archer</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Inox Guard">Inox Guard</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Inox Shaman">Inox Shaman</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Living Bones">Living Bones</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Living Corpse">Living Corpse</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Living Spirit">Living Spirit</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Lurker">Lurker</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Night Demon">Night Demon</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Ooze">Ooze</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Rending Drake">Rending Drake</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Savvas Icestorm">Savvas Icestorm</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Savvas Lavaflow">Savvas Lavaflow</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Spitting Drake">Spitting Drake</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Stone Golem">Stone Golem</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Sun Demon">Sun Demon</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Vermling Scout">Vermling Scout</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Vermling Shaman">Vermling Shaman</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li><li><label><input type="checkbox" name="deck" value="Wind Demon">Wind Demon</label><span class="selectionlist"><label> with level </label><input type="number" name="scenario_number" min="0" max="7"></span></li></ul>
+                    <input id="applydecks" type="button" value="Apply">
                 </div>
             </div>
             <div id="cancelarea">
             </div>
         </div>
+
+
         <input alt="Configure" id="settingsbtn" type="image" src="images/settings.svg" />
         <div id="scenarioname"></div>
         <div id="tableau" style="font-size: 26.6px;"> <!-- base font size for all cards. Placed here to make it adjustable from javascript -->

@@ -12,6 +12,7 @@ export class Deck {
         this.discard = [];
 
         this._ondraw = console.log;
+        this._onshuffle = console.log;
     }
     shuffle(){
         var array = this.cards;
@@ -30,7 +31,7 @@ export class Deck {
         }
         
         this.cards = array;
-        this.onshuffle(this);
+        this._onshuffle(this);
         return this;
     }
     draw(draw_count){

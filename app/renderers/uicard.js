@@ -5,11 +5,11 @@ import { toggle_class } from '/app/utils.js';
 export class UICard {
 
     constructor(card){
-    	this.card = card;
+        this.card = card;
 
         this.back = create_modifier_card_back();
         this.front = create_modifier_card_front(card.content.image);
-        console.log(this.back);
+
         this.flip_up(false);
     }
 
@@ -51,13 +51,27 @@ export class UICard {
     }
 
     draw(){
-    	this.set_depth(0);
-    	this.addClass('pull')
+        this.set_depth(0);
+        this.addClass('pull')
 
-    	this.flip_up(true);
-    	this.removeClass("draw");
-    	this.addClass("discard");
-    	this.addClass("top")
+        this.flip_up(true);
+        this.removeClass("draw");
+        this.addClass("discard");
+        this.addClass("top")
+    }
+
+    discard(){
+        this.removeClass('lift');
+        this.removeClass('pull');
+        this.flip_up(false);
+        this.removeClass('discard');
+        this.addClass('draw')
+    }
+
+    shuffle(){
+        this.set_depth(-1);
+        this.addClass('shuffle');
+        window.setTimeout(() => this.removeClass('shuffle'), 1000);
     }
 }
 

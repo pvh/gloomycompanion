@@ -6,6 +6,8 @@ export class ModifierDeckRenderer{
 	constructor(deck, container){
 		this.deck = deck;
 		this.container = container;
+		this.uiCards = [];
+		this.deck_space = undefined;
 	}
 	render(){
 	    let button_div = document.createElement("div");
@@ -24,33 +26,57 @@ export class ModifierDeckRenderer{
 	    let deck_column = document.createElement("div");
 	    deck_column.className = "modifier-deck-column-2";
 
-	    let deck_space = document.createElement("div");
-	    deck_space.className = "card-container modifier";
-	    deck_space.id = "boom";
+	    this.deck_space = document.createElement("div");
+	    this.deck_space.className = "card-container modifier";
+
 
 	    let draw_two_button = document.createElement("div");
 	    draw_two_button.className = "button draw-two";
 //	    draw_two_button.onclick = double_draw.bind(null, modifier_deck);
 
-	    deck_column.appendChild(deck_space);
+	    deck_column.appendChild(this.deck_space);
 	    deck_column.appendChild(draw_two_button);
 
 	    this.container.appendChild(deck_column);
 	    this.container.appendChild(button_div);
 
-	    let uiCards = this.deck.cards.map((c) => new UICard(c));
-	    let container = document.getElementById("boom");
+	    this.uiCards = this.deck.cards.map((c) => new UICard(c));
 
-	    uiCards.forEach((c) => {
-	    	c.attach(container);
+	    this.uiCards.forEach((c, i) => {
+	    	c.set_depth(i * -1);
+	    	c.attach(this.deck_space);
 	    });
 
+	    this.deck.ondraw(this.ondrawn.bind(this));
 
-
-
-
-
+	    return this.uiCards;
 	}
+
+	ondrawn(cards) {
+	    	this.uiCards.forEach((c) => {
+	    		c.push_down();
+	    		if (c.containsClass('top')){
+	    			window.setTimeout(() => c.removeClass("top"), 2000);
+	  				return;
+	    		}
+	    		c.flip_up(false);
+	    		c.removeClass("pull");
+	    		c.removeClass("cleanup");
+	    	});
+
+	    	cards.forEach((card) => {
+				let uiCard = this.uiCards.find((uc) => uc.card === card);
+				this.move_to_top(uiCard);
+				uiCard.draw();
+			});	
+	    }
+
+	move_to_top(uiCard){
+		let topCard = this.deck_space.children[0];
+		this.deck_space.insertBefore(uiCard.front,topCard);
+		this.deck_space.insertBefore(uiCard.back,topCard);
+	}
+
 	create_counter_widget(card_type, increment_func, decrement_func) {
 
         let widget_container = document.createElement("div");

@@ -41,9 +41,23 @@ export class UICard {
         this.back.classList.remove(class_name);
     }
 
+    containsClass(class_name) {
+        return this.front.classList.contains(class_name);
+    }
+
     attach(parent) {
         parent.appendChild(this.back);
         parent.appendChild(this.front);
+    }
+
+    draw(){
+    	this.set_depth(0);
+    	this.addClass('pull')
+
+    	this.flip_up(true);
+    	this.removeClass("draw");
+    	this.addClass("discard");
+    	this.addClass("top")
     }
 }
 
@@ -65,8 +79,5 @@ function create_modifier_card_front(card_url) {
 
     return card;
 }
-
-
-
 
 export default UICard;

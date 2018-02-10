@@ -25,15 +25,15 @@ function load_scenario(event, b) {
 	console.log( event);
 
 	modifier_deck = new ModifierDeck();
+	modifier_deck.shuffle();
 	modifier_deck_renderer = new ModifierDeckRenderer(modifier_deck, create_container());
-	modifier_deck_renderer.render();
+	let cards = modifier_deck_renderer.render();
+
+	container.addEventListener('click', ()=>{
+		deck.draw(1);
+	})
 
 	window.deck = modifier_deck;
-
-	console.log(modifier_deck);
-
-	console.log(modifier_deck.draw());
-
 }
 
 function init() {

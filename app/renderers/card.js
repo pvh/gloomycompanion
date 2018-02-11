@@ -4,13 +4,17 @@ import { toggle_class } from '/app/utils.js';
 
 export class UICard {
 
-    constructor(card){
+    constructor(card, card_name){
         this.card = card;
+        this.name = (card_name || card.type);
+    }
 
-        this.back = create_modifier_card_back();
-        this.front = create_modifier_card_front(card.content.image);
+    init(){
+        this.back = this._create_card_back(this.card.content);
+        this.front = this._create_card_front(this.card.content);
 
         this.flip_up(false);
+        return this;
     }
 
     flip_up(faceup) {
@@ -73,25 +77,25 @@ export class UICard {
         this.addClass('shuffle');
         window.setTimeout(() => this.removeClass('shuffle'), 1000);
     }
-}
 
-function create_modifier_card_back() {
-    var card = document.createElement("div");
-    card.className = "card modifier back draw";
-    return card;
-}
+    _create_card_back() {
+        var card = document.createElement("div");
+        card.className = "card modifier back draw";
+        return card;
+    }
 
-function create_modifier_card_front(card_url) {
-    var img = document.createElement("img");
-    img.className = "cover";
-    img.src = card_url;
+    _create_card_front(content) {
+        var img = document.createElement("img");
+        img.className = "cover";
+        img.src = content.image;
 
-    var card = document.createElement("div");
-    card.className = "card modifier front draw";
+        var card = document.createElement("div");
+        card.className = "card modifier front draw";
 
-    card.appendChild(img);
+        card.appendChild(img);
 
-    return card;
+        return card;
+    }   
 }
 
 export default UICard;

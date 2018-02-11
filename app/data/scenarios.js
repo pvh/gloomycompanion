@@ -13,15 +13,15 @@ const SPECIAL_RULES =
 const SCENARIO_DEFINITIONS =
     [   { name: "#1 Black Barrow",
           decks:
-            [   {"name": "Bandit Guard", "deck_name": "Guard"},
-                {"name": "Bandit Archer", "deck_name": "Archer"},
-                {"name": "Living Bones", "deck_name": "Living Bones"}
+            [   {"name": "Bandit Guard"},
+                {"name": "Bandit Archer"},
+                {"name": "Living Bones"}
             ]
         },
         { name: "#2 Barrow Lair",
           decks:
             [   {"name": "Bandit Archer"},
-                {"name": "Boss: Bandit Commander"},
+                {"name": "Bandit Commander", "class": "Boss"},
                 {"name": "Living Bones"},
                 {"name": "Living Corpse"}
             ]
@@ -71,14 +71,14 @@ const SCENARIO_DEFINITIONS =
           decks:
             [   {"name": "Living Bones"},
                 {"name": "Living Corpse"},
-                {"name": "Boss: Inox Bodyguard"}
+                {"name": "Inox Bodyguard", "class": "Boss"}
             ]
         },
         { name: "#9 Diamond Mine",
           decks:
             [   {"name": "Hound"},
                 {"name": "Vermling Scout"},
-                {"name": "Boss: Merciless Overseer"}
+                {"name": "Merciless Overseer", "class": "Boss"}
             ]
         },
         { name: "#10 Plane of Elemental Power",
@@ -94,7 +94,7 @@ const SCENARIO_DEFINITIONS =
                 {"name": "Living Corpse"},
                 {"name": "City Guard"},
                 {"name": "City Archer"},
-                {"name": "Boss: Captain of the Guard"}
+                {"name": "Captain of the Guard", "class": "Boss"}
             ]
         },
         { name: "#12 Gloomhaven Square B",
@@ -104,7 +104,7 @@ const SCENARIO_DEFINITIONS =
                 {"name": "Cultist"},
                 {"name": "City Guard"},
                 {"name": "City Archer"},
-                {"name": "Boss: Jekserah"}
+                {"name": "Jekserah", "class": "Boss"}
             ]
         },
         { name: "#13 Temple of the Seer",
@@ -167,7 +167,7 @@ const SCENARIO_DEFINITIONS =
                 {"name": "Cultist"},
                 {"name": "Night Demon"},
                 {"name": "Living Corpse"},
-                {"name": "Boss: Jekserah"}
+                {"name": "Jekserah", "class": "Boss"}
             ]
         },
         { name: "#21 Infernal Throne",
@@ -178,7 +178,7 @@ const SCENARIO_DEFINITIONS =
                 {"name": "Wind Demon"},
                 {"name": "Earth Demon"},
                 {"name": "Flame Demon"},
-                {"name": "Boss: Prime Demon"}
+                {"name": "Prime Demon", "class": "Boss"}
             ]
         },
         { name: "#22 Temple of the Elements",
@@ -287,7 +287,7 @@ const SCENARIO_DEFINITIONS =
           decks:
             [   {"name": "Rending Drake"},
                 {"name": "Spitting Drake"},
-                {"name": "Boss: Elder Drake"}
+                {"name": "Elder Drake", "class": "Boss"}
             ]
         },
         { name: "#35 Gloomhaven Battlements A",
@@ -305,7 +305,7 @@ const SCENARIO_DEFINITIONS =
                 {"name": "Earth Demon"},
                 {"name": "Wind Demon"},
                 {"name": "City Archer"},
-                {"name": "Boss: Prime Demon"}
+                {"name": "Prime Demon", "class": "Boss"}
             ]
         },
         { name: "#37 Doom Trench",
@@ -384,7 +384,7 @@ const SCENARIO_DEFINITIONS =
                 {"name": "Frost Demon"},
                 {"name": "Wind Demon"},
                 {"name": "Savvas Icestorm"},
-                {"name": "Boss: Winged Horror"}
+                {"name": "Winged Horror", "class": "Boss"}
             ]
         },
         { name: "#47 Lair of the Unseeing Eye",
@@ -392,7 +392,7 @@ const SCENARIO_DEFINITIONS =
             [   {"name": "Lurker"},
                 {"name": "Deep Terror"},
                 {"name": "Harrower Infester"},
-                {"name": "Boss: The Sightless Eye"}
+                {"name": "The Sightless Eye", "class": "Boss"}
             ]
         },
         { name: "#48 - Shadow Weald",
@@ -400,7 +400,7 @@ const SCENARIO_DEFINITIONS =
             [   {"name": "Forest Imp"},
                 {"name": "Earth Demon"},
                 {"name": "Harrower Infester"},
-                {"name": "Boss: Dark Rider"}
+                {"name": "Dark Rider", "class": "Boss"}
             ]
         },
         { name: "#49 Rebel's Stand",
@@ -420,7 +420,7 @@ const SCENARIO_DEFINITIONS =
         },
         { name: "#51 The Void",
           decks:
-            [   {"name": "Boss: The Gloom"}
+            [   {"name": "The Gloom", "class": "Boss"}
             ]
         },
         { name: "#52 Noxious Cellar",
@@ -635,7 +635,7 @@ const SCENARIO_DEFINITIONS =
           decks:
             [   {"name": "Stone Golem"},
                 {"name": "Giant Viper"},
-                {"name": "Boss: The Betrayer"}
+                {"name": "The Betrayer", "class": "Boss"}
             ]
         },
         { name: "#80 Vigil Keep",
@@ -652,7 +652,7 @@ const SCENARIO_DEFINITIONS =
                 {"name": "Sun Demon"},
                 {"name": "Stone Golem"},
                 {"name": "Ancient Artillery"},
-                {"name": "Boss: The Colorless"}
+                {"name": "The Colorless", "class": "Boss"}
             ]
         },
         { name: "#82 Burning Mountain",

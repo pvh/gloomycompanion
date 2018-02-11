@@ -11,6 +11,7 @@ let scenario_load;
 let scenario_name;
 
 function loadScenario(){
+	selected_scenario.level = parseInt(scenario_level.value);
 	dispatch(EVENT_NAMES.LOAD_SCENARIO, selected_scenario);
 }
 

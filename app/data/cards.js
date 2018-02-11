@@ -401,4 +401,4 @@ function load_definition(card_database) {
 
 let deck_definitions = load_definition(DECK_DEFINITONS);
 
-export { DECKS, DECK_DEFINITONS, deck_definitions };
+export { DECKS, deck_definitions as DECK_DEFINITONS  };

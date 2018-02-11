@@ -3,9 +3,13 @@ import { listen, document_load } from '/app/utils.js';
 import { EVENT_NAMES } from '/app/constants.js';
 
 import { ModifierDeck } from '/app/decks/modifierdeck.js';
+import { AbilityDeck } from '/app/decks/abilitydeck.js';
 import { ModifierDeckRenderer } from '/app/renderers/modifierdeck.js';
 
 let container = document.getElementById("tableau");
+
+let ability_decks = [];
+
 var modifier_deck;
 var modifier_deck_renderer;
 
@@ -33,6 +37,18 @@ function load_scenario(event, b) {
 		deck.draw(1);
 	})
 
+
+	event.decks.forEach(function(deck) {
+		let ability = new AbilityDeck(deck, event.level)
+		ability_decks.push(ability.shuffle());
+	})
+
+	console.log(ability_decks);
+
+
+
+
+	window.ability = ability_decks;
 	window.deck = modifier_deck;
 }
 

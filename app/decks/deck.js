@@ -7,6 +7,7 @@ export class Deck {
 
         this.name = name;
         this.type = type;
+        this.shuffle_required = false;
         
         this.cards = [];
         this.discard = [];
@@ -32,6 +33,7 @@ export class Deck {
         
         this.cards = array;
         this._onshuffle(this);
+        this.shuffle_required = false;
         return this;
     }
     draw(draw_count){
@@ -39,22 +41,26 @@ export class Deck {
         let drawn = [];
         while (draw_count-- > 0){
             if (this.cards.length == 0)
-                return this._reshuffle().draw();
+                return this.reset_deck().shuffle().draw();
 
             let card = this.cards.shift();
             drawn.push(card);
             this.discard.push(card);
+            this.shuffle_required = card.shuffle_next_round || this.shuffle_required;
         } 
-        this._ondraw(drawn, deck);
+        this._ondraw(drawn, this);
         return drawn;
     }
-    _reshuffle(){
+    reset_deck(){
+        if (!this.shuffle_required)
+            return {shuffle: ()=>{}};
+
         while (this.discard.length > 0){
             var c = this.discard.pop();
             if (c)
                 this.cards.push(c);
         }
-        return this.shuffle();
+        return this;
     }
     render(){
         return false;

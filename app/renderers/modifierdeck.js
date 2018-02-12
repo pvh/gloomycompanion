@@ -17,7 +17,7 @@ export class ModifierDeckRenderer extends DeckRenderer {
 
         let end_round_div = document.createElement("div");
         end_round_div.className = "counter-icon shuffle not-required";
-        //end_round_div.onclick = end_round;
+        end_round_div.addEventListener('click', () => this.deck.reset_deck().shuffle());
 
         button_div.appendChild(end_round_div);
 

@@ -7,6 +7,7 @@ export class UICard {
     constructor(card, card_name){
         this.card = card;
         this.name = (card_name || card.type);
+        this.shuffle_next_round = card.shuffle_next_round;
     }
 
     init(){

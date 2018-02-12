@@ -23,34 +23,42 @@ export class DeckRenderer{
     }
 
     ondrawn(cards) {
-            this.uiCards.forEach((c) => {
-                c.push_down();
-                if (c.containsClass('top')){
-                    window.setTimeout(() => c.removeClass("top"), 2000);
-                    return;
-                }
-                c.flip_up(false);
-                c.removeClass("pull");
-            });
+        this.uiCards.forEach((c) => {
+            c.push_down();
+            if (c.containsClass('top')){
+                window.setTimeout(() => c.removeClass("top"), 2000);
+                return;
+            }
+            c.flip_up(false);
+            c.removeClass("pull");
+        });
 
-            cards.forEach((card) => {
-                let uiCard = this.uiCards.find((uc) => uc.card === card);
-                this.move_to_top(uiCard);
-                uiCard.draw();
-            }); 
+        cards.forEach((card) => {
+            let uiCard = this.uiCards.find((uc) => uc.card === card);
+            this.move_to_top(uiCard);
+            uiCard.draw();
+        }); 
     }
 
     onshuffled(deck){
-        this.uiCards.forEach((card, i) => {
+
+        let uiCards = this.get_uicards_from_pile(deck);
+
+        uiCards.forEach((card, i) => {
             card.discard();
             card.set_depth((i * -1)-1);
         });
         window.setTimeout(()=>{
-            let topCard = this.uiCards[0];
+            let topCard = uiCards[0];
             this.move_to_top(topCard);
             topCard.shuffle();
         },500);
+    }
 
+    get_uicards_from_pile(deck){
+        return this.uiCards.filter(uicard => {
+            return deck.cards.includes(uicard.card);
+        });
     }
 
     move_to_top(uiCard){

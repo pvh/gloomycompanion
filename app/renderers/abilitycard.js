@@ -36,6 +36,12 @@ export class UIAbilityCard extends UICard {
         initiative_span.innerText = content.content[0];
         card.appendChild(initiative_span);        
 
+        if (this.shuffle_next_round) {
+            var shuffle_img = document.createElement("img");
+            shuffle_img.src = "images/shuffle.svg";
+            card.appendChild(shuffle_img);
+        }
+
         this.parser.parse(content, card);
 
         return card;

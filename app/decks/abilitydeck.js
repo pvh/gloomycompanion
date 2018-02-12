@@ -30,6 +30,13 @@ export class AbilityDeck extends Deck{
         });
     }
 
+    draw(draw_count){
+        if (this.shuffle_required){
+            this.reset_deck().shuffle();
+            return [];
+        }
+        super.draw(draw_count);
+    }
 }
 
 export default AbilityDeck;

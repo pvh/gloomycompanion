@@ -14,6 +14,8 @@ export class Deck {
 
         this._ondraw = console.log;
         this._onshuffle = console.log;
+        this._onadd = console.log;
+        this._onremove = console.log;
     }
     shuffle(){
         var array = this.cards;
@@ -71,6 +73,12 @@ export class Deck {
     }
     onshuffle(_cb){
         this._onshuffle = _cb || (() => {});
+    }
+    onadd(_cb){
+        this._onadd = _cb || (() => {});
+    }
+    onremove(_cb){
+        this._onremove = _cb || (() => {});
     }
 }
 

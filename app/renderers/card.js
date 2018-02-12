@@ -55,6 +55,11 @@ export class UICard {
         parent.appendChild(this.front);
     }
 
+    detach(){
+        this.front.remove();
+        this.back.remove();
+    }
+
     draw(){
         this.set_depth(0);
         this.addClass('pull')

@@ -40,7 +40,25 @@ export class ModifierDeckRenderer extends DeckRenderer {
 
         this.uiCards = this.deck.cards.map((c) => new UICard(c).init());
 
+        this.deck.onadd(this.onadd.bind(this));
+        this.deck.onremove(this.onremove.bind(this));
+
         return super.render()
+    }
+
+    onadd(card) {
+        var uicard = new UICard(card).init();
+        uicard.attach(this.deck_space);
+        uicard.set_depth(-50);
+        this.uiCards.push(uicard);
+    }
+
+    onremove(card){
+        let uiCard = this.uiCards.find((uc) => uc.card === card);
+        if (!uiCard)
+            return;
+        this.uiCards = this.uiCards.filter((uc) => uc !== uiCard);
+        uiCard.detach();
     }
 
     create_counter_widget(card_type, increment_func, decrement_func) {

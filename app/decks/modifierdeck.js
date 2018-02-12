@@ -17,6 +17,7 @@ export class ModifierDeck extends Deck {
     		this.cards.push(c);
     	});
     }
+
     count(card_type){
     	var c = 0;
     	this.cards.forEach((card) => {
@@ -24,6 +25,7 @@ export class ModifierDeck extends Deck {
     	});
     	return c;
     }
+
     add(card_type){
     	let c;
     	if (card_type === CARD_TYPES_MODIFIER.BLESS)
@@ -37,168 +39,36 @@ export class ModifierDeck extends Deck {
     		return 10;
 
     	this.cards.push(c);
+        this._onadd(c);
     	this.shuffle();
 		return this.count(c.type);
     }
+
     remove(card_type){	
-    	var removed = false;
+        var removed_card;
 
     	this.cards = this.cards.filter((c) => {
-    		if (removed) return true;	
+    		if (removed_card) return true;	
     		if (c.type === card_type){
-    			removed = true;
+                removed_card = c;
     			return false;
     		}
     	});
 
+        if (removed_card)
+            this._onremove(removed_card);
     	this.shuffle();
 		return this.count(card_type);
     }
-    _reshuffle(){
-    	this.discard = this.discard.filter((card) => (card.type !== CARD_TYPES_MODIFIER.BLESS && card.type !== CARD_TYPES_MODIFIER.CURSE));
-    	return super._reshuffle();
-    }
-}
-
-
-
-
-
-
-function define_modifier_card(card_definition) {
-    var card_front = create_modifier_card_front(card_definition.image);
-    var card_back = create_modifier_card_back();
-
-    var card = {
-        ui: new UICard(card_front, card_back),
-        card_type: card_definition.type,
-        shuffle_next_round: card_definition.shuffle
-    };
-
-    return card;
-}
-
-
-function create_modifier_card_back() {
-    var card = document.createElement("div");
-    card.className = "card modifier back";
-
-    return card;
-}
-
-function create_modifier_card_front(card_url) {
-    var img = document.createElement("img");
-    img.className = "cover";
-    img.src = card_url;
-
-    var card = document.createElement("div");
-    card.className = "card modifier front";
-    card.appendChild(img);
-
-    return card;
-}
-
-
-
-
-
-function load_modifier_deck(number_bless, number_curses) {
-
-
-    deck.draw_top_discard = function() {
-        if (this.discard.length > 0) {
-            var card = this.discard[this.discard.length-1];
-            card.ui.set_depth(-3);
-            card.ui.addClass("pull");
-            card.ui.flip_up(true);
-            card.ui.removeClass("draw");
-            card.ui.addClass("discard");
-        }
-        force_repaint_deck(this);
-    }
-
-    deck.count = function (card_type) {
-        return (this.draw_pile.filter(function (card) {
-            return card.card_type === card_type;
-        }).length);
-    }.bind(deck);
-
-    deck.remove_card = function (card_type) {
-        for (var i = 0; i < deck.draw_pile.length; i++) {
-            if (deck.draw_pile[i].card_type == card_type) {
-                deck.draw_pile.splice(i, 1);
-                reshuffle(deck, false);
-
-                force_repaint_deck(deck);
-                break;
-            }
-        }
-        // write_to_storage("modifier_deck", JSON.stringify(modifier_deck));
-
-        return this.count(card_type);
-    }.bind(deck);
-
-    deck.add_card = function (card_type) {
-        // TOOD: Brittle
-        deck.draw_pile.push(define_modifier_card(MODIFIER_CARDS[card_type.toUpperCase()]));
-
-        force_repaint_deck(deck);
-        reshuffle(deck, false);
-        // write_to_storage("modifier_deck", JSON.stringify(modifier_deck));
-
-        return this.count(card_type);
-    }.bind(deck);
-
-    deck.shuffle_end_of_round = function () {
-        return this.discard.filter(function (card) {
-                return card.shuffle_next_round;
-            }).length > 0;
-    }.bind(deck);
-
-    deck.must_reshuffle = function () {
-        return !this.draw_pile.length;
-    }.bind(deck);
-
-    deck.clean_discard_pile = function () {
-        for (var i = 0; i < deck.discard.length; i++) {
-            if (this.discard[i].card_type == CARD_TYPES_MODIFIER.BLESS
-                || this.discard[i].card_type == CARD_TYPES_MODIFIER.CURSE) {
-                //Delete this curse/bless that has been used
-                this.discard.splice(i, 1);
-                i--;
-            }
-        }
-
-        // This is needed every time we update
-        force_repaint_deck(this);
-    }.bind(deck);
-
-    deck.clean_advantage_deck = function () {
-        if ((deck.advantage_to_clean) && deck.discard[1]) {
-            deck.advantage_to_clean = false;
-            deck.discard[0].ui.removeClass("right");
-            deck.discard[0].ui.removeClass("left");
-            deck.discard[1].ui.removeClass("left");
-            deck.discard[1].ui.removeClass("left");
-        }
-    }.bind(deck);
-    var loaded_deck = JSON.parse(get_from_storage("modifier_deck"));
-
-    MODIFIER_DECK.forEach(function (card_definition) {
-        var card = define_modifier_card(card_definition);
-        if (loaded_deck && find_in_discard_and_remove(loaded_deck.discard,card.card_type)) {
-            deck.discard.push(card);
-        } else {
-            deck.draw_pile.push(card);
-        }
-    });
-
-
-
-
-
-
     
+    reset_deck(){
+        const special = [CARD_TYPES_MODIFIER.BLESS, CARD_TYPES_MODIFIER.CURSE];
+        
+        let removed = this.discard.filter((card) => special.includes(card.type));
+    	this.discard = this.discard.filter((card) => !special.includes(card.type));
 
-    return deck;
+        removed.forEach(this._onremove);
+
+    	return super.reset_deck();
+    }
 }

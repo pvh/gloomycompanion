@@ -348,27 +348,10 @@
     background-image:           url(images/attack_mod_back.jpg);
 }
 
-.card.modifier.front img.cover
+.card.modifier.front
 {
-    position:                   absolute;
-    top:                        0;
-    left:                       0;
-    width:                      100%;
-    height:                     100%;
-}
-
-.card.modifier.front.left img.cover
-{
-    left:                       -25%;
-    -webkit-clip-path:          inset(0% 24.5% 0% 24.5%);
-    clip-path:                  inset(0% 24.5% 0% 24.5%);
-}
-
-.card.modifier.front.right img.cover
-{
-    left:                       25%;
-    -webkit-clip-path:          inset(0% 24.5% 0% 24.5%);
-    clip-path:                  inset(0% 24.5% 0% 24.5%);
+    background-position:        50% 50%;
+    background-image:           url(images/attack_mod_back.jpg);
 }
 
 .card ul

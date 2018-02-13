@@ -9,6 +9,7 @@ export class DeckRenderer{
         this.uiCards = [];
         this.deck_space = container;
     }
+    
     render(){
 
         this.uiCards.forEach((c, i) => {
@@ -23,19 +24,16 @@ export class DeckRenderer{
     }
 
     ondrawn(cards) {
-        this.uiCards.forEach((c) => {
+        this.uiCards.forEach((c, i) => {
             c.push_down();
-            if (c.containsClass('top')){
-                window.setTimeout(() => c.removeClass("top"), 2000);
-                return;
-            }
-            c.flip_up(false);
             c.removeClass("pull");
         });
 
-        cards.forEach((card) => {
+        cards.forEach((card, i) => {
             let uiCard = this.uiCards.find((uc) => uc.card === card);
             this.move_to_top(uiCard);
+
+            uiCard.split(i, cards.length);
             uiCard.draw();
         }); 
     }
@@ -47,6 +45,7 @@ export class DeckRenderer{
         uiCards.forEach((card, i) => {
             card.discard();
             card.set_depth((i * -1)-1);
+            card.split(0);
         });
         window.setTimeout(()=>{
             let topCard = uiCards[0];

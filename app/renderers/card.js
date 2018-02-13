@@ -60,7 +60,18 @@ export class UICard {
         this.back.remove();
     }
 
+    split(number, card_count){
+        let width = Math.round((100 / (card_count||1)) * 100) / 100;
+
+        this.front.style.width = width + "%";
+        this.back.style.width = width + "%";
+
+        this.front.style.marginLeft = ((width * number) + number) + "%";
+        this.back.style.marginLeft = ((width * number) + number) + "%";
+    }
+
     draw(){
+        this.removeClass('shuffle');
         this.set_depth(0);
         this.addClass('pull')
 
@@ -91,15 +102,9 @@ export class UICard {
     }
 
     _create_card_front(content) {
-        var img = document.createElement("img");
-        img.className = "cover";
-        img.src = content.image;
-
         var card = document.createElement("div");
         card.className = "card modifier front draw";
-
-        card.appendChild(img);
-
+        card.style.backgroundImage = "url("+content.image+")";
         return card;
     }   
 }

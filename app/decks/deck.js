@@ -41,15 +41,15 @@ export class Deck {
     draw(draw_count){
         draw_count = draw_count || 1;
         let drawn = [];
-        while (draw_count-- > 0){
+        do {
             if (this.cards.length == 0)
-                return this.reset_deck().shuffle().draw();
+                return this.reset_deck().shuffle().draw(draw_count);
 
             let card = this.cards.shift();
             drawn.push(card);
             this.discard.push(card);
             this.shuffle_required = card.shuffle_next_round || this.shuffle_required;
-        } 
+        } while (draw_count-- > 1);
         this._ondraw(drawn, this);
         return drawn;
     }

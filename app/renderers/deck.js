@@ -1,5 +1,6 @@
 'use strict';
 
+import eventbus from '/app/tinycentraldispatch.js'
 import { UICard } from '/app/renderers/card.js';
 
 export class DeckRenderer{
@@ -9,7 +10,7 @@ export class DeckRenderer{
         this.uiCards = [];
         this.deck_space = container;
     }
-    
+
     render(){
 
         this.uiCards.forEach((c, i) => {
@@ -17,8 +18,9 @@ export class DeckRenderer{
             c.attach(this.deck_space);
         });
 
-        this.deck.ondraw(this.ondrawn.bind(this));
-        this.deck.onshuffle(this.onshuffled.bind(this));
+        eventbus.onclick(this.deck_space, 'draw_cards', this.deck, {cards: 1});
+        eventbus.listen('cards_drawn', this.deck, (p) => this.ondrawn(p.cards) );
+        eventbus.listen('deck_shuffled', this.deck, (p) => this.onshuffled(p.deck) );
 
         return this.uiCards;
     }

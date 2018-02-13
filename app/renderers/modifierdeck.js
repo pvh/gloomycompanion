@@ -2,6 +2,7 @@
 
 import { UICard } from '/app/renderers/card.js';
 import { DeckRenderer } from '/app/renderers/deck.js';
+import eventbus from '/app/tinycentraldispatch.js'
 
 export class ModifierDeckRenderer extends DeckRenderer {
     constructor(deck, container){
@@ -11,13 +12,12 @@ export class ModifierDeckRenderer extends DeckRenderer {
         let button_div = document.createElement("div");
         button_div.className = "modifier-deck-column-1";
 
-        button_div.appendChild(this.create_counter_widget("bless", (a) => this.deck.add(a), (a) => this.deck.remove(a)));
-        button_div.appendChild(this.create_counter_widget("curse", (a) => this.deck.add(a), (a) => this.deck.remove(a)));
+        button_div.appendChild(this.create_counter_widget("bless", "remove_modifier", "add_modifier"));
+        button_div.appendChild(this.create_counter_widget("curse", "remove_modifier", "add_modifier"));
         button_div.appendChild(this.create_counter_widget("round"));
 
         let end_round_div = document.createElement("div");
         end_round_div.className = "counter-icon shuffle not-required";
-        end_round_div.addEventListener('click', () => this.deck.reset_deck().shuffle());
 
         button_div.appendChild(end_round_div);
 
@@ -27,10 +27,8 @@ export class ModifierDeckRenderer extends DeckRenderer {
         this.deck_space = document.createElement("div");
         this.deck_space.className = "card-container modifier";
 
-
         let draw_two_button = document.createElement("div");
         draw_two_button.className = "button draw-two";
-//      draw_two_button.onclick = double_draw.bind(null, modifier_deck);
 
         deck_column.appendChild(this.deck_space);
         deck_column.appendChild(draw_two_button);
@@ -39,9 +37,12 @@ export class ModifierDeckRenderer extends DeckRenderer {
         this.container.appendChild(button_div);
 
         this.uiCards = this.deck.cards.map((c) => new UICard(c).init());
+        
+        eventbus.onclick(draw_two_button, 'draw_cards', this.deck, {cards: 2});
+        eventbus.onclick(end_round_div, 'end_round', this.deck);
 
-        this.deck.onadd(this.onadd.bind(this));
-        this.deck.onremove(this.onremove.bind(this));
+        eventbus.listen("modifier_card_added", this.deck, (e) => this.onadd(e.card));
+        eventbus.listen("modifier_card_removed", this.deck, (e) => this.onremove(e.card));
 
         return super.render()
     }
@@ -61,7 +62,7 @@ export class ModifierDeckRenderer extends DeckRenderer {
         uiCard.detach();
     }
 
-    create_counter_widget(card_type, increment_func, decrement_func) {
+    create_counter_widget(card_type, increment_event, decrement_event) {
 
         let widget_container = document.createElement("div");
         widget_container.className = "counter-icon";
@@ -74,24 +75,24 @@ export class ModifierDeckRenderer extends DeckRenderer {
         text_element.className = "icon-text";
         text_element.innerText = "0";
 
-        if (decrement_func)
-            widget_container.appendChild(this.create_button(card_type, "decrement", "-", decrement_func, text_element));
+        if (increment_event)
+            widget_container.appendChild(this.create_button(card_type, "decrement", "-", increment_event, text_element));
         
         widget_container.appendChild(text_element);
         
-        if (increment_func)
-            widget_container.appendChild(this.create_button(card_type, "increment", "+", increment_func, text_element));
+        if (decrement_event)
+            widget_container.appendChild(this.create_button(card_type, "increment", "+", decrement_event, text_element));
+
+        eventbus.listen("modifier_deck_changed", this.deck, (e) => { if (e[card_type] !== undefined) text_element.innerText = e[card_type]; });
 
         return widget_container;
     }
-    create_button(card_type, class_name, text, func, text_element) {
+    create_button(card_type, class_name, text, event_name, text_element) {
         var button = document.createElement("div");
         button.className = class_name + " button";
         button.innerText = text;
 
-        button.addEventListener("click", () => {
-            text_element.innerText = func(card_type);
-        });
+        eventbus.onclick(button, event_name, this.deck, {type: card_type});
 
         return button;
     }

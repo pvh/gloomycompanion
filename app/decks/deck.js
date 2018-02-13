@@ -1,6 +1,6 @@
 'use strict';
 
-import UICard from '/app/decks/card.js';
+import eventbus from '/app/tinycentraldispatch.js';
 
 export class Deck {
     constructor(type, name) {
@@ -12,10 +12,8 @@ export class Deck {
         this.cards = [];
         this.discard = [];
 
-        this._ondraw = console.log;
-        this._onshuffle = console.log;
-        this._onadd = console.log;
-        this._onremove = console.log;
+        eventbus.listen("draw_cards", this, (p) => this.draw(p.cards));
+        eventbus.listen("end_round", () => this.shuffle_required, () => { this.reset_deck().shuffle();});
     }
     shuffle(){
         var array = this.cards;
@@ -34,23 +32,28 @@ export class Deck {
         }
         
         this.cards = array;
-        this._onshuffle(this);
+        eventbus.dispatch("deck_shuffled", this, {deck: this});
         this.shuffle_required = false;
         return this;
     }
     draw(draw_count, already_drawn){
         draw_count = draw_count || 1;
         let drawn = already_drawn || [];
+
         do {
-            if (this.cards.length == 0)
+            if (this.cards.length === 0)
                 return this.reset_deck().shuffle().draw(draw_count, drawn);
 
             let card = this.cards.shift();
             drawn.push(card);
+            
             this.shuffle_required = card.shuffle_next_round || this.shuffle_required;
+            if (card.shuffle_next_round)
+                eventbus.dispatch("shuffle_required", this, {deck: this});
         } while (draw_count-- > 1);
-        this._ondraw(drawn, this);
+
         drawn.forEach((c) => this.discard.push(c));
+        eventbus.dispatch("cards_drawn", this, {cards: drawn, deck: this});
         return drawn;
     }
     reset_deck(){
@@ -66,19 +69,6 @@ export class Deck {
     }
     render(){
         return false;
-    }
-
-    ondraw(_cb){
-        this._ondraw = _cb || (() => {});
-    }
-    onshuffle(_cb){
-        this._onshuffle = _cb || (() => {});
-    }
-    onadd(_cb){
-        this._onadd = _cb || (() => {});
-    }
-    onremove(_cb){
-        this._onremove = _cb || (() => {});
     }
 }
 

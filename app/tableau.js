@@ -1,6 +1,10 @@
 
+'use strict';
+
 import { listen, document_load } from '/app/utils.js';
 import { EVENT_NAMES } from '/app/constants.js';
+
+import eventbus from '/app/tinycentraldispatch.js';
 
 import { ModifierDeck } from '/app/decks/modifierdeck.js';
 import { AbilityDeck } from '/app/decks/abilitydeck.js';
@@ -22,10 +26,7 @@ function create_container(){
     return modifier_container;
 }
 
-
-function load_scenario(event, b) {
-
-	console.log( event);
+function load_scenario(event) {
 
 	let modifier_container = create_container();
 	modifier_container.id = "modifier-container";
@@ -33,23 +34,19 @@ function load_scenario(event, b) {
 	modifier_deck = new ModifierDeck();
 	modifier_deck.shuffle();
 	modifier_deck_renderer = new ModifierDeckRenderer(modifier_deck, modifier_container);
-	let cards = modifier_deck_renderer.render();
+	modifier_deck_renderer.render();
 
-	modifier_container.addEventListener('click', ()=>{
-		modifier_deck.draw(1);
-	})
 
 	event.decks.forEach(function(deck) {
 		let container = create_container();
-		let ability = new AbilityDeck(deck, event.level)
+		let ability = new AbilityDeck(deck, event.level);
 		ability_decks.push(ability.shuffle());
 		let renderer = new AbilityDeckRenderer(ability, container);
 		renderer.render();
+	});
 
-		container.addEventListener('click', ()=>{
-			ability.draw(1);
-		});
-	})
+	eventbus.listen("cards_drawn", undefined, (c) => console.log(c.deck.name + ' - cards left:',  c.deck.cards.length) );
+	eventbus.listen("modifier_deck_changed", undefined, console.log );
 
 	window.ability = ability_decks;
 	window.deck = modifier_deck;

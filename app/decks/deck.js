@@ -38,19 +38,19 @@ export class Deck {
         this.shuffle_required = false;
         return this;
     }
-    draw(draw_count){
+    draw(draw_count, already_drawn){
         draw_count = draw_count || 1;
-        let drawn = [];
+        let drawn = already_drawn || [];
         do {
             if (this.cards.length == 0)
-                return this.reset_deck().shuffle().draw(draw_count);
+                return this.reset_deck().shuffle().draw(draw_count, drawn);
 
             let card = this.cards.shift();
             drawn.push(card);
-            this.discard.push(card);
             this.shuffle_required = card.shuffle_next_round || this.shuffle_required;
         } while (draw_count-- > 1);
         this._ondraw(drawn, this);
+        drawn.forEach((c) => this.discard.push(c));
         return drawn;
     }
     reset_deck(){

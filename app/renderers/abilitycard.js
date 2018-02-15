@@ -19,6 +19,17 @@ export class UIAbilityCard extends UICard {
         name_span.innerText = this.name;
         card.appendChild(name_span);
 
+        let stats = this.parser.stats
+        let health_span = document.createElement("span");
+        health_span.className = "health";
+        if (this.parser.is_boss) {
+            health_span.innerHTML = "[" + stats.health + "]"
+        }
+        else {
+            health_span.innerHTML = (" [" + stats.normal.health + " / <span class='elite-color'>" + stats.elite.health + "</span>" + "]");
+        }
+        card.appendChild(health_span)
+
         return card;
     }
 
@@ -30,6 +41,18 @@ export class UIAbilityCard extends UICard {
         name_span.className = "name";
         name_span.innerText = this.name;
         card.appendChild(name_span);
+
+        let stats = this.parser.stats
+        let health = this.parser.is_boss ? [stats.health] : [stats.normal.health, stats.elite.health];
+        let health_span = document.createElement("span");
+        health_span.className = "health";
+        if (this.parser.is_boss) {
+            health_span.innerHTML = "[" + health + "]"
+        }
+        else {
+            health_span.innerHTML = (" [" + health[0] + " / <span class='elite-color'>" + health[1] + "</span>" + "]");
+        }
+        card.appendChild(health_span)
 
         var initiative_span = document.createElement("span");
         initiative_span.className = "initiative";
